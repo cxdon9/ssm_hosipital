@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <context:component-scan base-package="com.baizhi.controller"/>
+
+    <mvc:annotation-driven/>
+
+    <!--
+        文件上传解析器
+        id必须叫做：multipartResolver spring框架才会使用
+    -->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    </bean>
+
+    <!--拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+
+            <!--拦截器的请求地址
+               /* 只能拦截器后边这个请求路径，项目名后边只有一个请求路径   http://localhost:8081/项目名/a1.do
+               /** 拦截器所有controller请求 例如 http://localhost:8081/项目名/product/a1.do
+            -->
+            <mvc:mapping path="/**"/>
+
+            <!--
+                exclude(排除)  在上边的请求中排除一些不拦截
+                对于登录、注册请求可以不拦截
+            -->
+            <mvc:exclude-mapping path="/user/selectByName.do"/>
+            <mvc:exclude-mapping path="/user/reg.do"/>
+
+            <!--配置自定义拦截器-->
+            <bean class="com.baizhi.controller.MyInterceptor"/>
+
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>

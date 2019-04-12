@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.TriageDao">
+
+    <select id="select" resultType="com.baizhi.entity.Department">
+        SELECT t1.*,NVL(x1.count, 0) count
+        FROM t_department
+             t1
+             LEFT
+             JOIN (
+             SELECT
+             t1
+             .
+             did,
+             count(
+             *)
+             count
+             FROM
+             t_triage
+             t1
+             GROUP
+             BY
+             did)
+             x1
+        ON t1
+           .
+           id =
+           x1
+           .
+           did
+    </select>
+
+    <insert id="insert">
+        insert into T_TRIAGE (ID, STATUS, PID, DID)
+        values (sys_guid(), 0, #{pid}, #{did})
+    </insert>
+
+
+    <update id="update">
+        update T_PATIENT
+        set NAME    = #{name},
+            sex     = #{sex},
+            birth   = #{birth},
+            idcard  = #{idcard},
+            address = #{address},
+            mobile  = #{mobile}
+        where ID = #{id}
+    </update>
+    <update id="updateStatus">
+        update T_TRIAGE
+        set STATUS = 1
+        where ID = #{id}
+    </update>
+
+    <resultMap id="triageMap" type="com.baizhi.entity.Triage">
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="illness_info" property="illness_info"/>
+        <result column="advice" property="advice"/>
+        <result column="pid" property="pid"/>
+        <result column="did" property="did"/>
+        <result column="userid" property="userid"/>
+        <association property="patient" javaType="com.baizhi.entity.Patient">
+            <result column="ppid" property="id"/>
+            <result column="ppname" property="name"/>
+            <result column="ppsex" property="sex"/>
+            <result column="ppbirth" property="birth"/>
+        </association>
+    </resultMap>
+
+    <select id="selectByDept" resultMap="triageMap">
+        SELECT t_triage.*, tp.id ppid,tp.name ppname,tp.sex ppsex,tp.birth ppbirth
+        FROM t_triage
+                 LEFT JOIN t_patient tp ON t_triage.pid = tp.id
+        WHERE did = #{did}
+    </select>
+</mapper>

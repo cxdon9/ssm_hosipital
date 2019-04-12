@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.PatientDao">
+
+    <select id="select" resultType="com.baizhi.entity.Patient">
+        SELECT * FROM T_PATIENT
+        <where>
+            <if test="patient !=null">
+                <if test="patient.name !=null and patient.name !=''">
+                    T_PATIENT.name like '%'||#{patient.name}||'%'
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO T_PATIENT
+        VALUES (sys_guid(), #{name}, #{sex}, #{birth}, #{idcard}, #{address}, #{mobile})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM T_PATIENT
+        WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteMany">
+        DELETE FROM T_PATIENT WHERE ID IN
+        <foreach collection="array" open="(" close=")" item="i" separator=",">
+            #{i}
+        </foreach>
+    </delete>
+    <select id="selectOne" resultType="com.baizhi.entity.Patient">
+        select *
+        from T_PATIENT
+        WHERE ID = #{id}
+    </select>
+    <update id="update">
+        update T_PATIENT
+        set NAME    = #{name},
+            sex     = #{sex},
+            birth   = #{birth},
+            idcard  = #{idcard},
+            address = #{address},
+            mobile  = #{mobile}
+        where ID = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.DepartmentDao">
+
+    <select id="select" resultType="com.baizhi.entity.Department">
+        SELECT * FROM t_department
+        <where>
+            <if test="department !=null">
+                <if test="department.name !=null and department.name !=''">
+                    t_department.name like '%'||#{department.name}||'%'
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO t_department (id, name, telephone, area)
+        VALUES (sys_guid(), #{name}, #{telephone}, #{area})
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM T_DEPARTMENT
+        WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteMany">
+        DELETE FROM T_DEPARTMENT WHERE ID IN
+        <foreach collection="array" open="(" close=")" item="i" separator=",">
+            #{i}
+        </foreach>
+    </delete>
+    <select id="selectOne" resultType="com.baizhi.entity.Department">
+        select *
+        from T_DEPARTMENT
+        WHERE ID = #{id}
+    </select>
+    <update id="update">
+        update T_DEPARTMENT
+        set NAME      = #{name},
+            TELEPHONE = #{telephone},
+            AREA      = #{area}
+        where ID = #{id}
+    </update>
+
+</mapper>

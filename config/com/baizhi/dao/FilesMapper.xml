@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.dao.FilesDao">
+
+    <select id="select" resultType="com.baizhi.entity.Files">
+        select * from T_FILES
+        <where>
+            <if test="files !=null">
+                <if test="files.file_name !=null and files.file_name !=''">
+                    T_FILES.file_name like '%'||#{files.file_name}||'%'
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert">
+        insert into T_FILES (ID, FILE_NAME, FILE_PATH, SAVE_NAME, UP_TIME, FILE_SIZE)
+        values (sys_guid(), #{file_name}, #{file_path}, #{save_name}, sysdate, #{file_size})
+    </insert>
+
+    <select id="selectOne" resultType="com.baizhi.entity.Files">
+        select *
+        from T_FILES
+        WHERE ID = #{id}
+    </select>
+</mapper>
